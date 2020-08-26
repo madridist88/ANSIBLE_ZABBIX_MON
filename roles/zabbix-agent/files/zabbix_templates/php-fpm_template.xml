@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-03-06T15:34:02Z</date>
+    <groups>
+        <group>
+            <name>Templates/Applications</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template App PHP-FPM</template>
+            <name>Template App PHP-FPM</name>
+            <description>PHP-FPM Zabbix Template with Auto Discovery and Multiple Pools.&#13;
+- Provides auto discovery of PHP-FPM pools (LLD)&#13;
+- Detects pools that via socket and via TCP&#13;
+- Supported types of PHP process manager: dynamic, static, ondemand.&#13;
+- Supports multiple PHP versions, i.e. you can use PHP 7.2 and PHP 7.3 on the same server and we will detect them all.&#13;
+&#13;
+Homepage: https://github.com/rvalitov/zabbix-php-fpm</description>
+            <groups>
+                <group>
+                    <name>Templates/Applications</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>PHP-FPM</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>PHP-FPM is alive</name>
+                    <key>php-fpm.check</key>
+                    <applications>
+                        <application>
+                            <name>PHP-FPM</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>PHP-FPM is DOWN</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>PHP-FPM Pools Discovery</name>
+                    <key>php-fpm.discover</key>
+                    <delay>2m</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Active processes</name>
+                            <key>php-fpm.status[active,{#POOL}]</key>
+                            <applications>
+                                <application>
+                                    <name>PHP-FPM</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Idle processes</name>
+                            <key>php-fpm.status[idle,{#POOL}]</key>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Max children reached</name>
+                            <key>php-fpm.status[max_child,{#POOL}]</key>
+                            <applications>
+                                <application>
+                                    <name>PHP-FPM</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;20</expression>
+                                    <name>PHP-FPM max children reached &gt; 20</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>RPS</name>
+                            <key>php-fpm.status[rps,{#POOL}]</key>
+                            <delay>30s</delay>
+                            <value_type>FLOAT</value_type>
+                            <applications>
+                                <application>
+                                    <name>PHP-FPM</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(,2m)}&lt;=0</expression>
+                                    <name>PHP-FPM RPS = 0</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Total processes</name>
+                            <key>php-fpm.status[total,{#POOL}]</key>
+                            <applications>
+                                <application>
+                                    <name>PHP-FPM</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$PHP_FPM_STATUS_URL}</macro>
+                    <value>/fpm71-status-www</value>
+                </macro>
+            </macros>
+            <screens>
+                <screen>
+                    <name>PHP-FPM</name>
+                    <hsize>2</hsize>
+                    <vsize>3</vsize>
+                </screen>
+            </screens>
+        </template>
+    </templates>
+</zabbix_export>

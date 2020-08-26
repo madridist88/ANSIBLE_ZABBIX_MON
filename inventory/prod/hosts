@@ -1,0 +1,45 @@
+[prod]
+zbxproxy ansible_host=10.20.70.5 ansible_user=ansible-user
+stage_app ansible_host=10.20.50.2 ansible_user=ansible-user
+zabbix ansible_host=10.20.70.4 ansible_user=ansible-user
+stage_chat ansible_host=10.20.50.3 ansible_user=ansible-user
+stage_chatpanel ansible_host=10.20.50.4 ansible_user=ansible-user
+stage_redis ansible_host=10.20.50.5 ansible_user=ansible-user
+stage_mysql ansible_host=10.20.50.6 ansible_user=ansible-user
+stage_elastic ansible_host=10.20.50.7 ansible_user=ansible-user
+stage_rabbitmq ansible_host=10.20.50.8 ansible_user=ansible-user
+adm_reverse_proxy ansible_host=10.20.72.2 ansible_user=ansible-user
+prod_app ansible_host=10.20.30.2 ansible_user=ansible-user
+prod_chat ansible_host=10.20.30.3 ansible_user=ansible-user
+prod_chatpanel ansible_host=10.20.30.4 ansible_user=ansible-user
+prod_redis ansible_host=10.20.30.5 ansible_user=ansible-user
+prod_mysql ansible_host=10.20.30.6 ansible_user=ansible-user
+prod_elastic ansible_host=10.20.30.7 ansible_user=ansible-user
+prod_rabbitmq ansible_host=10.20.30.8 ansible_user=ansible-user
+prod_ved ansible_host=10.20.30.30 ansible_user=ansible-user
+
+[zabbix-servers]
+zabbix
+
+[zabbix-proxies]
+zbxproxy
+
+[zabbix_agents]
+zbxproxy
+zabbix
+stage_app
+stage_chat
+stage_chatpanel
+stage_redis
+stage_mysql
+stage_elastic
+stage_rabbitmq
+adm_reverse_proxy
+prod_app
+prod_chat
+prod_chatpanel
+prod_redis
+prod_mysql
+prod_elastic
+prod_rabbitmq
+prod_ved

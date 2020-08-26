@@ -1,0 +1,8 @@
+# for special chars in userparams
+zabbix_agent_unsafeuserparameters: 1
+zabbix_link_templates:
+  - 'Nginx'
+  - 'Template OS Linux by Zabbix agent'
+  - 'Template docker monitoring'
+  - 'basic_metrics'
+  - 'Template App PHP-FPM'

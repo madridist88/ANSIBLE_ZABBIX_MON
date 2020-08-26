@@ -1,0 +1,36 @@
+---
+- name: Try work web login
+  zabbix_login_try:
+    server_url: "{{ zabbix_web_url }}"
+    login_user: "{{ zabbix_web_admin_user }}"
+    login_password: "{{ zabbix_web_admin_pass }}"
+    timeout: 10
+  register: zabbix_work_pass
+
+- name: Show {{ zabbix_web_admin_user }} user work pass login result
+  debug: var=zabbix_work_pass
+  when: not zabbix_work_pass.ok
+
+- name: Try default zabbix login
+  zabbix_login_try:
+    server_url: "{{ zabbix_web_url }}"
+    login_user: "{{ zabbix_web_default_user }}"
+    login_password: "{{ zabbix_web_default_pass }}"
+    timeout: 10
+  register: zabbix_default_pass
+  when: not zabbix_work_pass.ok
+
+- name: Show {{ zabbix_web_default_user }} user default pass login result
+  debug: var=zabbix_default_pass
+  when: not zabbix_work_pass.ok
+
+- name: Change Default Admin password
+  zabbix_passwd:
+    server_url: "{{ zabbix_web_url }}"
+    login_user: "{{ zabbix_web_default_user }}"
+    login_password: "{{ zabbix_web_default_pass }}"
+    alias: "{{ zabbix_web_default_user }}"
+    passwd: "{{ zabbix_web_admin_pass }}"
+  when: not zabbix_work_pass.ok and zabbix_default_pass.ok
+        and zabbix_web_default_pass != zabbix_web_admin_pass
+

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-03-05T14:55:09Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>basic_metrics</template>
+            <name>basic_metrics</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>basic</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Disk await</name>
+                    <key>basic[await]</key>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>basic</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Disk r_await</name>
+                    <key>basic[r_await]</key>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>basic</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>TCP inuse</name>
+                    <key>basic[tcp_inuse]</key>
+                    <applications>
+                        <application>
+                            <name>basic</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>UDP inuse</name>
+                    <key>basic[udp_inuse]</key>
+                    <applications>
+                        <application>
+                            <name>basic</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Disk w_await</name>
+                    <key>basic[w_await]</key>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>basic</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Disks discovery</name>
+                    <key>iostat.discovery</key>
+                    <delay>3</delay>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>

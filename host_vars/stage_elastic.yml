@@ -1,0 +1,6 @@
+# for special chars in userparams
+zabbix_agent_unsafeuserparameters: 1
+zabbix_link_templates:
+  - 'Template OS Linux by Zabbix agent'
+  - 'Template elasticsearch'
+  - 'basic_metrics'

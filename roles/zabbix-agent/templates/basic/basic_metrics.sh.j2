@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function tcp_inuse() {
+    cat /proc/net/sockstat  | grep TCP: | awk {'print $3'}
+}
+function udp_inuse() {
+    cat /proc/net/sockstat  | grep UDP: | awk {'print $3'}
+}
+
+function await() {
+    bash {{ zabbix_agent_scripts }}/iostat-parse.sh /tmp/iostat.out vda await
+}
+
+function r_await() {
+    bash {{ zabbix_agent_scripts }}/iostat-parse.sh /tmp/iostat.out vda r_await
+}
+
+function w_await() {
+    bash {{ zabbix_agent_scripts }}/iostat-parse.sh /tmp/iostat.out vda w_await
+}
+case "$1" in
+        tcp_inuse)
+                tcp_inuse
+                ;;
+        udp_inuse)
+                udp_inuse
+                ;;
+        await)
+                await
+                ;;
+    r_await)
+        r_await
+        ;;
+    w_await)
+        w_await
+        ;;
+        *)
+                echo $"Usage $0 {udp_inuse|tcp_inuse|await|r_await|w_await}"
+                exit
+esac
+

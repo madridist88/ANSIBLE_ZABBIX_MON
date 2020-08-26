@@ -1,0 +1,10 @@
+server {
+   listen 127.0.0.1:{{ zabbix_nginx_status_page_port }};
+   server_name nginx.status;
+   access_log off;
+   allow 127.0.0.1;
+   deny all;
+   location /nginx-status {
+       stub_status on;
+   }
+}

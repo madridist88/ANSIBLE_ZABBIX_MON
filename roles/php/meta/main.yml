@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: Andrey Kislyak
+  description: Role installs and configure remi php.
+  license: Apache
+  min_ansible_version: 2.6
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  galaxy_tags: []
+
+dependencies: []

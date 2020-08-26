@@ -1,0 +1,23 @@
+---
+- name: Add nginx repository
+  yum_repository:
+    name: nginx
+    description: nginx-stable
+    baseurl: http://nginx.org/packages/centos/$releasever/$basearch/
+    gpgcheck: True
+    gpgkey: https://nginx.org/keys/nginx_signing.key
+
+- name: Install nginx modules
+  yum:
+    name: "{{ nginx_modules_packages }}"
+    state: present
+  when: nginx_modules_packages | length > 0
+  notify: restart nginx
+
+- name: Install nginx main packages
+  yum:
+    name: "{{ nginx_packages }}"
+    update_cache: True
+    state: present
+    enablerepo: "nginx"
+  notify: restart nginx

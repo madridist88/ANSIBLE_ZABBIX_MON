@@ -1,0 +1,38 @@
+---
+# tasks file for zabbix-configure
+
+
+- name: Install Python easy_install
+  package: name=python-setuptools
+  delegate_to: "{{ zabbix_agent_delegate_admin_to }}"
+  run_once: True
+  when:
+    - zabbix_install_pip_packages | bool
+    - zabbix_api_create_users | bool
+
+- name: "Install pip for zabbix-api on {{ zabbix_agent_delegate_admin_to }}"
+  easy_install:
+    name=pip
+    state=present
+  delegate_to: "{{ zabbix_agent_delegate_admin_to }}"
+  run_once: True
+  when:
+    - zabbix_install_pip_packages | bool
+    - zabbix_api_create_users | bool
+
+- name: "Installing the Zabbix-api package on {{ zabbix_agent_delegate_admin_to }}"
+  pip:
+    name: zabbix-api
+    state: present
+  register: zabbix_api_package_installed
+  delegate_to: "{{ zabbix_agent_delegate_admin_to }}"
+  run_once: True
+  when:
+    - zabbix_install_pip_packages | bool
+    - zabbix_api_create_users | bool
+
+
+- include_tasks: zabbix_web_users.yml
+  when:
+    - zabbix_install_pip_packages | bool
+    - zabbix_api_create_users | bool

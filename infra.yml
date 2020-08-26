@@ -1,0 +1,37 @@
+---
+
+- hosts: [zabbix-servers,zabbix-proxies,zabbix_agents]
+  name: Gather facts
+  become: true
+  tasks: []
+  tags: [always]
+
+- hosts: zabbix-servers
+  name: zabbix-server
+  become: true
+  roles:
+     - postgresql
+     - zabbix-server
+     - zabbix-web
+     - nginx
+     - php
+     - zabbix-configure
+  tags:
+    - zabbix-server
+
+- hosts: zabbix-proxies
+  name: zabbix-proxy
+  become: true
+  roles:
+     - postgresql
+     - zabbix-proxy
+  tags:
+    - zabbix-proxy
+
+- hosts: zabbix_agents
+  name: zabbix_agent
+  become: true
+  roles:
+    - zabbix-agent
+  tags:
+    - zabbix-agent

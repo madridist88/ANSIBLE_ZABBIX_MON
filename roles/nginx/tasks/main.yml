@@ -1,0 +1,11 @@
+---
+# tasks file for ansible-nginx
+
+- import_tasks: install.yml
+  tags: [nginx, nginx_install]
+
+- import_tasks: configure.yml
+  tags: [nginx, nginx_configure]
+#
+- import_tasks: service.yml
+  tags: [nginx, nginx_service]

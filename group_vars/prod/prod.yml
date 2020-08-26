@@ -1,0 +1,49 @@
+---
+env: prod
+
+### Zabbis servers vars
+zabbix_version: 4.4
+nginx_version: '1.16.1-1'
+postgresql_version: 12
+
+zabbix_server_hostname: "{{ groups['zabbix-servers'][0] }}"
+#zabbix_prefix_dir: /monitor
+
+zabbix_server_dbport: 5432
+zabbix_database_creation: False ## Deny create DB from zabbix_server_role
+zabbix_database_importing: True
+zabbix_server_dbname: zabbix
+zabbix_server_dbuser: zabbix
+#zabbix_server_dbpassword: "{{ zabbix_db_password }}"
+zabbix_server_database: pgsql
+zabbix_server_database_long: postgresql
+zabbix_server_pgsql_login_host: "{{ zabbix_server_hostname }}"
+zabbix_server_pgsql_login_user: "{{ zabbix_server_dbuser }}"
+zabbix_server_pgsql_login_password: "{{ zabbix_server_dbpassword }}"
+zabbix_websrv: nginx
+zabbix_web_url: "http://zabbix.youdomain"
+zabbix_web_admin_user: Admin
+
+## Zabbix proxies vars
+zabbix_server_host: 10.20.70.5
+zabbix_server_port: 10051
+zabbix_proxy_database: pgsql
+zabbix_proxy_database_long: postgresql
+zabbix_proxy_dbname: zabbix_proxy
+zabbix_proxy_dbuser: zabbix_proxy
+#zabbix_proxy_dbpassword: zabbix_proxy
+
+### Zabbix agents vars
+zabbix_agent_server: "127.0.0.1,10.20.70.4,10.20.70.5"
+zabbix_proxy: zbxproxy
+zabbix_mysql_user: zbx_monitor
+zabbix_mysql_pass: youpass
+
+### Zabbix api vars
+zabbix_api_create_users: True
+zabbix_api_create_hosts: True
+zabbix_api_user: "{{ zabbix_web_admin_user }}"
+zabbix_api_pass: "{{ zabbix_web_admin_pass }}"
+zabbix_url: "{{ zabbix_web_url }}"
+zabbix_agent_delegate_admin_to: "{{ groups['zabbix-servers'][0] }}"
+zabbix_proxy_delegate_admin_to: "{{ groups['zabbix-servers'][0] }}"

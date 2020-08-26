@@ -1,0 +1,13 @@
+---
+- name: Add remi repository
+  template:
+    src: remi.repo.j2
+    dest: /etc/yum.repos.d/remi.repo
+
+- name: Install php packages
+  yum:
+     name: "{{ php_packages }}"
+     update_cache: True
+     state: present
+     enablerepo: "remi-php{{ php_version }}"
+

@@ -1,0 +1,7 @@
+zabbix_agent_unsafeuserparameters: 1
+zabbix_link_templates:
+  - 'Nginx'
+  - 'Template OS Linux by Zabbix agent'
+  - 'basic_metrics'
+  - 'Template App PHP-FPM'
+  - 'Template DB MySQL by Zabbix agent'

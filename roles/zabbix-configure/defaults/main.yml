@@ -1,0 +1,11 @@
+---
+# defaults file for zabbix-configure
+
+zabbix_install_pip_packages: True
+zabbix_api_create_users: False
+zabbix_agent_delegate_admin_to: localhost
+zabbix_web_default_user: Admin
+zabbix_web_default_pass: zabbix
+zabbix_web_url: http://localhost
+zabbix_web_admin_user: Admin
+zabbix_web_admin_pass: qwerty

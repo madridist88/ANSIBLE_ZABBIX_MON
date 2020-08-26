@@ -1,0 +1,46 @@
+---
+- name: create status page from template
+  template:
+    src: nginx/status-page.conf.j2
+    dest: "{{ zabbix_agent_nginx_conf_d }}/status-page.conf"
+  notify: nginx reload
+  
+- name: "Create scripts directory"
+  file:
+    path: /etc/zabbix/scripts
+    owner: zabbix
+    group: zabbix
+    state: directory
+    mode: 0755  
+
+- name: copy from template nginx script
+  template:
+    src: nginx/nginx_stats.sh.j2
+    dest: "{{ zabbix_agent_scripts }}/nginx_stats.sh"
+    mode: '0755'
+    owner: zabbix
+    group: zabbix
+  notify:
+    - restart zabbix-agent
+
+- name: fix nginx log directory permission
+  file:
+    path: "{{ zabbix_agent_nginx_log_dir }}"
+    mode: 0755
+    state: directory
+
+- name: Custom vars for nginx
+  set_fact:
+    zabbix_custom_templates_nginx: ['nginx_template','ssl_template']
+    zabbix_link_templates_nginx: ['Certificate SSL Check']
+    zabbix_agent_userparameters_nginx:
+        - name: nginx_ssl
+          scripts_dir: nginx_ssl_int_check.sh
+        - name: nginx_stats
+
+- name: Merge custom vars for nginx
+  set_fact:
+    zabbix_custom_templates: "{{ zabbix_custom_templates + zabbix_custom_templates_nginx }}"
+    zabbix_link_templates: "{{ zabbix_link_templates + zabbix_link_templates_nginx }}"
+    zabbix_agent_userparameters: "{{ zabbix_agent_userparameters + zabbix_agent_userparameters_nginx }}"
+

@@ -1,0 +1,15 @@
+tags
+.vagrant/
+.vault-pass
+.idea
+.DS_Store
+./deploy_app.sh
+Vagrantfile
+/.project
+*.retry
+*.py[cC]
+/dockerfiles
+#/roles/*
+!/roles/requirements.yml
+ansible-cache
+vault.key

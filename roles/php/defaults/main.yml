@@ -1,0 +1,18 @@
+---
+# defaults file for ansible-php-remi
+php_version: 72
+php_packages:
+- "php{{ php_version }}"
+- "php{{ php_version }}-php-common"
+- "php{{ php_version }}-php-json"
+- "php{{ php_version }}-php-pgsql"
+- "php{{ php_version }}-php-mbstring"
+- "php{{ php_version }}-php-bcmath"
+- "php{{ php_version }}-php-xml"
+- "php{{ php_version }}-php-gd"
+- "php{{ php_version }}-runtime"
+- "php{{ php_version }}-php-pdo"
+- "php{{ php_version }}-php-cli"
+- "php{{ php_version }}-php-fpm"
+
+php_fpm_pools: []

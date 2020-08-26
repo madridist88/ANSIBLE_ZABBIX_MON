@@ -1,0 +1,28 @@
+- name: installing packages for php-fpm monitoring
+  yum:
+    name:
+      - jq
+      - fcgi-devel
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: installing packages for php-fpm monitoring
+  apt:
+    name:
+      - jq
+      - libfcgi-dev
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Custom vars for php_fpm
+  set_fact:
+    zabbix_custom_templates_php_fpm: ['php-fpm_template']
+    zabbix_agent_userparameters_php_fpm:
+      - name: php-fpm
+        scripts_dir: php_fpm_status.sh
+
+- name: Merge custom vars for php_fpm
+  set_fact:
+    zabbix_custom_templates: "{{ zabbix_custom_templates + zabbix_custom_templates_php_fpm }}"
+    zabbix_agent_userparameters: "{{ zabbix_agent_userparameters + zabbix_agent_userparameters_php_fpm }}"
+

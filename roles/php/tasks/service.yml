@@ -1,0 +1,6 @@
+---
+- name: Be sure "php{{php_version}}-php-fpm" is running and enabled
+  service:
+    name: "php{{php_version}}-php-fpm"
+    state: started
+    enabled: yes

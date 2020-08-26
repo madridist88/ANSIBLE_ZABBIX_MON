@@ -1,0 +1,3 @@
+UserParameter=php-fpm.check,ps aux | grep -c php-fpm.*maste[r]
+UserParameter=php-fpm.discover,{{ zabbix_agent_scripts }}/php_fpm_status.sh
+UserParameter=php-fpm.status[*],{{ zabbix_agent_scripts }}/php_fpm_status.sh $1 $2

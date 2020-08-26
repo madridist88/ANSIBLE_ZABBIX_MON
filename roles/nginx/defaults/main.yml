@@ -1,0 +1,37 @@
+---
+# defaults file for ansible-nginx
+nginx_version: '1.14.2-1'
+nginx_packages:
+- 'nginx-{{ nginx_version }}*'
+nginx_modules_packages: []
+#- 'https://github.com/deepdivenow/nginx-modules/releases/download/{{ nginx_version }}/nginx-module-kafka-{{ nginx_version }}.el7_4.ngx.x86_64.rpm'
+nginx_load_http_modules: []
+#- kafka
+nginx_user: nginx
+nginx_worker_processes: 1
+nginx_worker_rlimit_nofile: 16384
+nginx_worker_connections: 1024
+nginx_gzip: True
+nginx_gzip_comp_level: 3
+nginx_server_names_hash_bucket_size: 64
+nginx_restrict: False
+nginx_restrict_allow: []
+nginx_restrict_pass: []
+
+
+root: /usr/share/nginx/html
+
+nginx_only_sites_from_http_template: False
+nginx_http_template:
+  default:
+    template_file: site.conf.j2
+    listen: 80
+    server_name: localhost
+    root: /usr/share/nginx/html
+    error_page: '500 502 503 504  /50x.html'
+
+    web_server:
+      locations:
+      - name: '/'
+        root: /usr/share/nginx/html
+        index: index.html

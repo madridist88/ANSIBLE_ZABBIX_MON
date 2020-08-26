@@ -1,0 +1,11 @@
+---
+# tasks file for ansible-php-remi
+
+- import_tasks: install.yml
+  tags: [php, php_install]
+
+- import_tasks: configure.yml
+  tags: [php, php_configure]
+
+- import_tasks: service.yml
+  tags: [php, php_service]

@@ -1,0 +1,32 @@
+{% set pool = item.value %}
+{% set pool_name = item.key %}
+[{{ pool_name }}]
+
+{% if pool.prefix is defined %}
+prefix = {{ pool.prefix }}
+{% endif %}
+user = {{ pool.user }}
+group = {{ pool.group }}
+listen = {{ pool.listen.address }}
+{% for list_k,list_v in pool.listen.items() %}
+{% if list_k != 'address' %}
+listen.{{ list_k }} = {{ list_v }}
+{% endif %}
+{% endfor %}
+
+pm = {{ pool.pm.type }}
+{% for pm_k,pm_v in pool.pm.items() %}
+{% if pm_k != 'type' %}
+pm.{{ pm_k }} = {{ pm_v }}
+{% endif %}
+{% endfor %}
+
+slowlog = {{ pool.slowlog }}
+
+{% for php_set in ['php_admin_value','php_admin_flag','php_value'] %}
+{% if pool[php_set] is defined %}
+{% for k,v in pool[php_set].items() %}
+{{ php_set }}[{{ k }}] = {{ v }}
+{% endfor %}
+{% endif %}
+{% endfor %}

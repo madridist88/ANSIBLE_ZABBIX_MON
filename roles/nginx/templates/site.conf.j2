@@ -1,0 +1,93 @@
+# {{ ansible_managed }}
+{% set site=item.value %}
+{% if  site.site_prefix is defined%}
+### Site prefixes ###
+{% for k,v in site.site_prefix.items() %}
+    {{ k }}  {{ v }};
+{% endfor %}
+{% endif %}
+{% if site.upstreams is defined %}
+### Site upstreams ###
+{% for ups_k,ups_v in site.upstreams.items() %}
+upstream {{ ups_v.name }} {
+{% if ups_v.lb_method is defined %}    {{ ups_v.lb_method }};{% endif %}
+{% if ups_v.zone_name is defined and ups_v.zone_size is defined%}    zone {{ ups_v.zone_name }} {{ ups_v.zone_size }};{% endif %}
+{% for srv_k,srv_v in ups_v.servers.items() %}
+    server {{ srv_v.address }}:{{ srv_v.port }} weight={{ srv_v.weight|default("1") }} {{ srv_v.health_check|default("") }};
+{% endfor %}
+{% if ups_v.sticky_cookie is defined and ups_v.sticky_cookie%}
+    sticky cookie srv_id expires=1h  path=/;
+{% endif %}
+}
+{% endfor %}
+{% endif %}
+
+{% if site.reverse_proxy is defined and site.reverse_proxy.proxy_cache_path is defined %}
+{% for proxy_cache_path in site.reverse_proxy.proxy_cache_path %}
+proxy_cache_path {{ proxy_cache_path.path }} keys_zone={{ proxy_cache_path.keys_zone.name }}:{{ proxy_cache_path.keys_zone.size }}
+                 levels={{ proxy_cache_path.levels }} max_size={{ proxy_cache_path.max_size }}
+                 inactive={{ proxy_cache_path.inactive }} use_temp_path={{ proxy_cache_path.use_temp_path | ternary("on", "off") }};
+{% endfor %}
+
+{% if site.reverse_proxy.proxy_cache_background_update is defined %}
+proxy_cache_background_update {{ site.reverse_proxy.proxy_cache_background_update | ternary("on", "off") }};
+{% endif %}
+{% if site.reverse_proxy.proxy_cache_lock is defined %}
+proxy_cache_lock {{ site.reverse_proxy.proxy_cache_lock | ternary("on", "off") }};
+{% endif %}
+{% if site.reverse_proxy.proxy_cache_min_uses is defined %}
+proxy_cache_min_uses {{ site.reverse_proxy.proxy_cache_min_uses }};
+{% endif %}
+{% if site.reverse_proxy.proxy_cache_revalidate is defined %}
+proxy_cache_revalidate {{ site.reverse_proxy.proxy_cache_revalidate | ternary("on", "off") }};
+{% endif %}
+{% if site.reverse_proxy.proxy_cache_use_stale is defined %}
+proxy_cache_use_stale {{ site.reverse_proxy.proxy_cache_use_stale | join(" ") }};
+{% endif %}
+{% if site.reverse_proxy.proxy_ignore_headers is defined %}
+proxy_ignore_headers {{ site.reverse_proxy.proxy_ignore_headers | join(" ") }};
+{% endif %}
+{% if site.reverse_proxy.proxy_temp_path is defined %}
+proxy_temp_path {{ site.reverse_proxy.proxy_temp_path.path }} {{ site.reverse_proxy.proxy_temp_path.level_1 | default("") }} {{ site.reverse_proxy.proxy_temp_path.level_2 | default("") }} {{ site.reverse_proxy.proxy_temp_path.level_3 | default("") }};
+{% endif %}
+{% endif %}
+
+server {
+{% if site.ssl is defined %}
+    listen {{ site.listen }} ssl;
+    ssl_certificate {{ site.ssl.cert }};
+    ssl_certificate_key {{ site.ssl.key }};
+{% else %}
+    listen {{ site.listen }};
+{% endif %}
+    server_name {{ site.server_name }};
+{% if site.root is defined and site.root %}
+    root {{ site.root }};
+{% endif %}
+{% if  site.server_ext is defined%}
+{% for k,v in site.server_ext.items() %}
+    {{ k }}  {{ v }};
+{% endfor %}
+{% endif %}
+
+
+{% if site.web_server is defined %}
+{% for location in site.web_server.locations %}
+    location {{ location.name }} {
+{% for k,v in location.items() %}
+{% if k != 'name' %}
+        {{ k }}  {{ v }};
+{% endif %}
+{% endfor %}
+    }
+{% endfor %}
+{% endif %}
+{% if site.error_page is defined %}
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   {{ site.root }};
+    }
+{% endif %}
+}

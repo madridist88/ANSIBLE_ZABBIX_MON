@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-03-05T11:30:49Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+        <group>
+            <name>Templates/Databases</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template DB Redis</template>
+            <name>Template DB Redis</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+                <group>
+                    <name>Templates/Databases</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Redis</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Bgstatus is OK</name>
+                    <key>redis[{$HOST},{$PORT},bgsave_status]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Redis bgsave status isn't OK</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Service status</name>
+                    <key>redis[{$HOST},{$PORT},check]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Redis service is DOWN</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Commands processed</name>
+                    <key>redis[{$HOST},{$PORT},commands_processed]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#1)}&lt;=3</expression>
+                            <name>Redis commands per 1min &lt;=3</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Connected clients</name>
+                    <key>redis[{$HOST},{$PORT},connected_clients]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Connected slaves</name>
+                    <key>redis[{$HOST},{$PORT},connected_slaves]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Evictions keys</name>
+                    <key>redis[{$HOST},{$PORT},key_evictions]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Expirations keys</name>
+                    <key>redis[{$HOST},{$PORT},key_expirations]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Hits keys</name>
+                    <key>redis[{$HOST},{$PORT},key_hits]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Misses keys</name>
+                    <key>redis[{$HOST},{$PORT},key_misses]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Master sync left bytes</name>
+                    <key>redis[{$HOST},{$PORT},master_sync_left_bytes]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Memory used</name>
+                    <key>redis[{$HOST},{$PORT},memory_used]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Slaves counter changed</name>
+                    <key>redis[{$HOST},{$PORT},slaves_changes]</key>
+                    <delay>15m</delay>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=1</expression>
+                            <name>Redis number of slaves has changed</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Slave status</name>
+                    <key>redis[{$HOST},{$PORT},slave_status]</key>
+                    <applications>
+                        <application>
+                            <name>Redis</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Redis slave is DOWN</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$HOST}</macro>
+                    <value>127.0.0.1</value>
+                </macro>
+                <macro>
+                    <macro>{$PORT}</macro>
+                    <value>6379</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>

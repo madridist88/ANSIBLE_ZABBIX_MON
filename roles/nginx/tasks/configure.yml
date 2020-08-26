@@ -1,0 +1,51 @@
+---
+
+- name: Main nginx conf
+  template:
+    backup: True
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: reload nginx
+
+- name: Add restriction conf
+  template:
+    backup: True
+    src: htpasswd.conf.j2
+    dest: /etc/nginx/htpasswd.conf
+  notify: reload nginx
+  when: nginx_restrict
+
+- name: Add restriction pass
+  template:
+    backup: True
+    src: htpasswd.j2
+    dest: /etc/nginx/htpasswd
+  notify: reload nginx
+  when: nginx_restrict
+
+- name: Add sites.conf
+  template:
+    backup: True
+    src: "{{ item.value.template_file }}"
+    dest: "/etc/nginx/conf.d/{{ item.key }}.conf"
+  with_dict: "{{ nginx_http_template }}"
+  notify: reload nginx
+
+- name: Delete sites not in config
+  block:
+  - name: Register site configs
+    shell: ls -1 *.conf | sed 's/.\{5\}$//'
+    register: site_configs
+    args:
+      chdir: /etc/nginx/conf.d/
+    changed_when: False
+    when: nginx_only_sites_from_http_template
+
+  - name: Delete sites not in config
+    file:
+      path: "/etc/nginx/conf.d/{{ item }}.conf"
+      state: absent
+    with_items: "{{ site_configs.stdout_lines }}"
+    when: item not in nginx_http_template.keys()
+    notify: reload nginx
+  when: nginx_only_sites_from_http_template

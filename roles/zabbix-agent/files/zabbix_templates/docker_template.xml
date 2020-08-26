@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-03-04T11:09:36Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template docker monitoring</template>
+            <name>Template docker monitoring</name>
+            <description>Шаблон для мониторинга состояния docker контейнеров и процесса dockerd. Используются три макроса&#13;
+{$DOCKER.COUNT} - сколько должно быть запущенных контейнеров&#13;
+{$DOCKER.STOPPED} - сколько должно быть остановленных контейнеров&#13;
+{$DOCKER.SYSTEMD.UNIT} - название systemd юнита</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>docker</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Количество запущенных docker контейнеров</name>
+                    <key>docker.cont_count</key>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;&gt;{$DOCKER.COUNT}</expression>
+                            <name>Количество запущенных docker контейнеров не равно {$DOCKER.COUNT}</name>
+                            <priority>AVERAGE</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                        <trigger>
+                            <expression>{nodata(10m)}=1</expression>
+                            <name>Нет данных о количестве запущенных docker контейнеров за последние 10 минут</name>
+                            <priority>AVERAGE</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Количество не запущенных docker контейнеров</name>
+                    <key>docker.cont_count_all</key>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;&gt;{$DOCKER.STOPPED}</expression>
+                            <name>Количество остановленных docker контейнеров не равно {$DOCKER.STOPPED}</name>
+                            <priority>AVERAGE</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                        <trigger>
+                            <expression>{nodata(10m)}=1</expression>
+                            <name>Нет данных о количестве остановленных docker контейнеров за последние 10 минут</name>
+                            <priority>AVERAGE</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Systemd unit docker остановлен</name>
+                    <key>docker.service.status[{$DOCKER.SYSTEMD.UNIT}]</key>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Systemd unit docker is not active</name>
+                            <priority>AVERAGE</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Процесс dockerd</name>
+                    <key>proc.num[dockerd]</key>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>get containers</name>
+                    <key>docker.discovery</key>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Потребление CPU контейнером {#ZD_NAME} {#ZD_ID}</name>
+                            <key>docker.res[{#ZD_ID},{{.CPUPerc}}]</key>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Потребление RAM контейнером {#ZD_NAME} {#ZD_ID}</name>
+                            <key>docker.res[{#ZD_ID},{{.MemPerc}}]</key>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>

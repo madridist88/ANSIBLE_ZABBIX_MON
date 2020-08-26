@@ -1,0 +1,3 @@
+#SSL Certificate Expiry
+UserParameter=cert.discovery, {{ zabbix_agent_scripts }}/nginx_ssl_int_check.sh
+UserParameter=cert.check[*], {{ zabbix_agent_scripts }}/nginx_ssl_int_check.sh $1 $2

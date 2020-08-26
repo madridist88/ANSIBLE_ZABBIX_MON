@@ -1,0 +1,13 @@
+---
+- name: Custom vars for redis
+  set_fact:
+    zabbix_custom_templates_redis: ['redis_template']
+    zabbix_agent_userparameters_redis:
+        - name: redis
+          scripts_dir: redis.sh
+
+- name: Merge custom vars for redis
+  set_fact:
+    zabbix_custom_templates: "{{ zabbix_custom_templates + zabbix_custom_templates_redis }}"
+    zabbix_agent_userparameters: "{{ zabbix_agent_userparameters + zabbix_agent_userparameters_redis }}"
+

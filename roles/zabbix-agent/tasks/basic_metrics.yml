@@ -1,0 +1,44 @@
+---
+- name: "Create /etc/zabbix/scripts directory"
+  file:
+    path: /etc/zabbix/scripts
+    owner: zabbix
+    group: zabbix
+    state: directory
+    mode: 0755 
+
+- name: add basic_metrics files
+  template:
+    src: "basic/{{ item }}.j2"
+    dest: "{{ zabbix_agent_scripts }}/{{ item }}"
+    mode: '0755'
+    owner: zabbix
+    group: zabbix
+  with_items:
+    - iostat-collect.sh
+    - iostat-parse.sh
+    - basic_metrics.sh
+
+- name: Cronjob Entry
+  cron:
+    name: "#iostat zabbix agent"
+    minute: "*" 
+    hour: "*"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    job: "{{ zabbix_agent_scripts }}/iostat-collect.sh /tmp/iostat.out 60"
+
+
+- name: Custom vars for basic_metrics
+  set_fact:
+    zabbix_custom_templates_basic_metrics: ['basic_template']
+    zabbix_agent_userparameters_basic_metrics:
+        - name: basic_metrics
+
+
+- name: Merge custom vars for basic_metrics
+  set_fact:
+    zabbix_custom_templates: "{{ zabbix_custom_templates + zabbix_custom_templates_basic_metrics }}"
+    zabbix_agent_userparameters: "{{ zabbix_agent_userparameters + zabbix_agent_userparameters_basic_metrics }}"
+

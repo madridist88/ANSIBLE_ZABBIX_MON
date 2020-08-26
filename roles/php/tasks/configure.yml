@@ -1,0 +1,9 @@
+---
+
+- name: Add php-fpm site conf
+  template:
+    backup: True
+    src: "{{ item.value.template_file }}"
+    dest: "/etc/opt/remi/php{{ php_version }}/php-fpm.d/{{ item.key }}.conf"
+  with_dict: "{{ php_fpm_pools }}"
+  notify: restart php-fpm

@@ -1,0 +1,5 @@
+---
+### Some common args
+#common_epel_enable: True
+#common_packages: [unzip, ca-certificates, curl, wget, pwgen]
+zabbix_agent_pidfile: /run/zabbix/zabbix_agentd.pid

@@ -1,0 +1,67 @@
+kafka;
+kafka_broker_list kafka-1:9092;
+
+# {{ ansible_managed }}
+{% set site=item.value %}
+{% if site.upstreams is defined %}
+{% for ups_k,ups_v in site.upstreams.items() %}
+upstream {{ ups_v.name }} {
+{% if ups_v.lb_method is defined %}    {{ ups_v.lb_method }};{% endif %}
+{% if ups_v.zone_name is defined and ups_v.zone_size is defined%}    zone {{ ups_v.zone_name }} {{ ups_v.zone_size }};{% endif %}
+{% for srv_k,srv_v in ups_v.servers.items() %}
+    server {{ srv_v.address }}:{{ srv_v.port }} weight={{ srv_v.weight|default("1") }} {{ srv_v.health_check|default("") }};
+{% endfor %}
+{% if ups_v.sticky_cookie is defined and ups_v.sticky_cookie%}
+    sticky cookie srv_id expires=1h  path=/;
+{% endif %}
+}
+{% endfor %}
+{% endif %}
+
+server {
+    listen 80 default_server;
+    server_name vtb.io;
+    charset     utf-8;
+    root /var/www/vhosts/vtb_dashboard/public;
+    gzip on;
+    gzip_types *;
+
+    #  access_log /var/www/vhosts/vtb_dashboard.access.log;
+    #  error_log /var/www/vhosts/vtb_dashboard.error.log;
+
+    # max upload size
+    client_max_body_size 10M;   # adjust to taste
+
+    location ~* /(.*\.(html|apk|map|ico|ts|zip|svg|css|js|less|gif|png|jpg|jpeg|ttf|woff|woff2i|otf|mp4)) {
+        access_log off;
+    }
+
+    location = / {
+        try_files /index.html =404;
+    }
+
+    location / {
+        try_files $uri /index.php =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass fastcgi_php;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location /topics/iot_data_mc0101 {
+        kafka_topic iot_data_mc0101;
+    }
+
+    location /topics/iot_data_ms0101 {
+        kafka_topic iot_data_ms0101;
+    }
+
+    location /topics/iot_data_td11 {
+        kafka_topic iot_data_td11;
+    }
+
+    location /topics/iot_data_si11 {
+        kafka_topic iot_data_si11;
+    }
+}

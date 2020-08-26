@@ -1,0 +1,12 @@
+---
+- name: Custom vars for elasticsearch
+  set_fact:
+    zabbix_custom_templates_elasticsearch: ['elasticsearch_template']
+    zabbix_agent_userparameters_elasticsearch:
+        - name: elasticsearch
+
+- name: Merge custom vars for elasticsearch
+  set_fact:
+    zabbix_custom_templates: "{{ zabbix_custom_templates + zabbix_custom_templates_elasticsearch }}"
+    zabbix_agent_userparameters: "{{ zabbix_agent_userparameters + zabbix_agent_userparameters_elasticsearch }}"
+

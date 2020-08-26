@@ -1,0 +1,5 @@
+UserParameter=docker.discovery,{{ zabbix_agent_scripts }}/docker_discovery.py
+UserParameter=docker.res[*],{{ zabbix_agent_scripts }}/get_container_res.sh $1 $2
+UserParameter=docker.cont_count,docker ps | grep -v 'CONTAINER ID' | wc -l
+UserParameter=docker.cont_count_all,docker ps -a | grep Exited | wc -l
+UserParameter=docker.service.status[*],systemctl is-active --quiet '$1' && echo 1 || echo 0

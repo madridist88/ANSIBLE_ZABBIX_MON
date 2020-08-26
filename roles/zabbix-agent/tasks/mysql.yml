@@ -1,0 +1,22 @@
+---
+- name: copy from template .zabbix.my.cnf
+  template:
+    src: mysql/zabbix.my.cnf.j2
+    dest: "{{ zabbix_agent_scripts }}/.zabbix.my.cnf"
+    mode: '0600'
+    owner: zabbix
+    group: zabbix
+  notify:
+    - restart zabbix-agent
+
+- name: Custom vars for mysql
+  set_fact:
+    zabbix_custom_templates_mysql: ['mysql_template']
+    zabbix_agent_userparameters_mysql:
+      - name: mysql
+
+- name: Merge custom vars for mysql
+  set_fact:
+    zabbix_custom_templates: "{{ zabbix_custom_templates + zabbix_custom_templates_mysql }}"
+    zabbix_agent_userparameters: "{{ zabbix_agent_userparameters + zabbix_agent_userparameters_mysql }}"
+
